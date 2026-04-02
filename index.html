@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Modern Freelancer Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #FAF8F5;
+      --bg-card: #FFFFFF;
+      --text: #1A1916;
+      --muted: #7A7066;
+      --faint: #C5BFB7;
+      --border: #EAE5DE;
+      --accent: #B87A0A;
+      --accent-hover: #9A6408;
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body: 'Source Serif 4', Georgia, serif;
+      --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 17px; line-height: 1.75; min-height: 100vh; }
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; font-family: inherit; border: none; background: none; }
+    input { font-family: inherit; }
+    #root { min-height: 100vh; display: flex; flex-direction: column; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--faint); border-radius: 3px; }
+    ::selection { background: #F0E8D5; }
+
+    /* category badge colors */
+    .badge-graphic-design  { color: #5B30A6; background: #EDE7FB; }
+    .badge-content-writing { color: #1A6B44; background: #E4F4EC; }
+    .badge-video-editing   { color: #B82020; background: #FBEAEA; }
+    .badge-social-media    { color: #1056A0; background: #E4EFF9; }
+
+    .dot-graphic-design  { background: #7B50C8; }
+    .dot-content-writing { background: #22844F; }
+    .dot-video-editing   { background: #CC2A2A; }
+    .dot-social-media    { background: #1868C0; }
+
+    /* navbar */
+    .navbar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(250, 248, 245, 0.94);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+    .navbar-inner {
+      max-width: 1160px; margin: 0 auto;
+      padding: 0 24px;
+      height: 62px;
+      display: flex; align-items: center; gap: 0;
+    }
+    .logo {
+      font-family: var(--font-display);
+      font-size: 1.15rem; font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .logo span { color: var(--accent); }
+    .nav-links {
+      display: flex; align-items: center; gap: 0;
+      margin-left: 36px; flex: 1;
+    }
+    .nav-link {
+      font-family: var(--font-ui);
+      font-size: 13px; font-weight: 500;
+      color: var(--muted);
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: color 0.15s, background 0.15s;
+      white-space: nowrap;
+    }
+    .nav-link:hover { color: var(--text); background: var(--border); }
+    .nav-link.active { color: var(--accent); }
+    .nav-right { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+    .search-btn {
+      display: flex; align-items: center; gap: 6px;
+      font-family: var(--font-ui); font-size: 13px; font-weight: 500;
+      color: var(--muted); padding: 7px 12px;
+      border-radius: 6px; border: 1px solid var(--border);
+      transition: all 0.15s;
+    }
+    .search-btn:hover { color: var(--text); border-color: var(--faint); }
+
+    /* search overlay */
+    .search-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(26, 25, 22, 0.5);
+      display: flex; align-items: flex-start; justify-content: center;
+      padding-top: 80px;
+    }
+    .search-box {
+      background: var(--bg-card);
+      border-radius: 14px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.18);
+      width: 100%; max-width: 580px;
+      margin: 0 24px;
+      overflow: hidden;
+    }
+    .search-input-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px 20px; border-bottom: 1px solid var(--border);
+    }
+    .search-input-row input {
+      flex: 1; border: none; outline: none;
+      font-family: var(--font-body); font-size: 17px;
+      background: transparent; color: var(--text);
+    }
+    .search-input-row input::placeholder { color: var(--faint); }
+    .search-results { padding: 8px 0; max-height: 360px; overflow-y: auto; }
+    .search-result-item {
+      display: flex; flex-direction: column; gap: 2px;
+      padding: 12px 20px; cursor: pointer; transition: background 0.1s;
+    }
+    .search-result-item:hover { background: var(--bg); }
+    .search-result-title { font-family: var(--font-body); font-size: 15px; font-weight: 600; color: var(--text); }
+    .search-result-cat { font-family: var(--font-ui); font-size: 12px; color: var(--muted); }
+    .search-empty { padding: 24px 20px; color: var(--muted); font-family: var(--font-ui); font-size: 14px; }
+
+    /* hero */
+    .hero { max-width: 1160px; margin: 0 auto; padding: 52px 24px 0; }
+    .hero-eyebrow {
+      font-family: var(--font-ui); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .hero-eyebrow::before {
+      content: ''; display: block; width: 24px; height: 1px; background: var(--accent);
+    }
+    .hero-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 48px; align-items: start;
+    }
+    @media (max-width: 720px) { .hero-grid { grid-template-columns: 1fr; gap: 32px; } }
+    .hero-left {}
+    .hero-category-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--font-ui); font-size: 11px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 5px 10px; border-radius: 4px;
+      margin-bottom: 18px;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+      font-weight: 700; line-height: 1.22;
+      letter-spacing: -0.015em;
+      color: var(--text); margin-bottom: 16px;
+    }
+    .hero-title:hover { color: var(--accent); cursor: pointer; transition: color 0.2s; }
+    .hero-excerpt {
+      font-size: 1.05rem; color: var(--muted); line-height: 1.7;
+      margin-bottom: 24px;
+    }
+    .hero-meta {
+      display: flex; align-items: center; gap: 12px;
+      font-family: var(--font-ui); font-size: 13px; color: var(--muted);
+    }
+    .hero-meta .dot { color: var(--faint); }
+    .hero-read-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-ui); font-size: 13px; font-weight: 600;
+      color: var(--accent); padding: 10px 0;
+      border-bottom: 2px solid transparent;
+      transition: border-color 0.2s;
+      letter-spacing: 0.03em;
+    }
+    .hero-read-btn:hover { border-color: var(--accent); }
+
+    .hero-right {
+      border-left: 1px solid var(--border);
+      padding-left: 48px;
+    }
+    @media (max-width: 720px) { .hero-right { border-left: none; border-top: 1px solid var(--border); padding-left: 0; padding-top: 32px; } }
+    .sidebar-heading {
+      font-family: var(--font-ui); font-size: 11px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--faint); margin-bottom: 20px;
+    }
+    .sidebar-list { display: flex; flex-direction: column; gap: 0; }
+    .sidebar-item {
+      display: flex; gap: 16px; padding: 14px 0;
+      border-bottom: 1px solid var(--border); cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .sidebar-item:last-child { border-bottom: none; }
+    .sidebar-item:hover { opacity: 0.72; }
+    .sidebar-num {
+      font-family: var(--font-display); font-size: 1.5rem; font-weight: 400;
+      color: var(--border); line-height: 1; flex-shrink: 0; width: 28px;
+    }
+    .sidebar-item-text { flex: 1; }
+    .sidebar-item-cat {
+      font-family: var(--font-ui); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .sidebar-item-title {
+      font-family: var(--font-body); font-size: 15px; font-weight: 600;
+      line-height: 1.35; color: var(--text);
+    }
+    .sidebar-item-meta {
+      font-family: var(--font-ui); font-size: 12px; color: var(--faint); margin-top: 4px;
+    }
+
+    /* divider */
+    .divider {
+      max-width: 1160px; margin: 48px auto 0; padding: 0 24px;
+      display: flex; align-items: center; gap: 20px;
+    }
+    .divider-label {
+      font-family: var(--font-ui); font-size: 11px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+      white-space: nowrap;
+    }
+    .divider-line { flex: 1; height: 1px; background: var(--border); }
+
+    /* posts grid */
+    .posts-section { max-width: 1160px; margin: 0 auto; padding: 32px 24px 64px; }
+    .posts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 28px;
+    }
+    .post-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px 26px 24px;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s;
+      display: flex; flex-direction: column;
+    }
+    .post-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(26,25,22,0.07);
+      border-color: var(--faint);
+    }
+    .post-card-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-family: var(--font-ui); font-size: 11px; font-weight: 700;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      padding: 4px 9px; border-radius: 4px;
+      margin-bottom: 16px; align-self: flex-start;
+    }
+    .post-card-title {
+      font-family: var(--font-display); font-size: 1.18rem; font-weight: 600;
+      line-height: 1.3; letter-spacing: -0.01em;
+      color: var(--text); margin-bottom: 10px;
+      flex: 1;
+    }
+    .post-card-excerpt {
+      font-size: 14px; color: var(--muted); line-height: 1.6;
+      margin-bottom: 18px;
+    }
+    .post-card-meta {
+      display: flex; align-items: center; gap: 10px;
+      font-family: var(--font-ui); font-size: 12px; color: var(--faint);
+      border-top: 1px solid var(--border); padding-top: 16px;
+      margin-top: auto;
+    }
+    .post-card-meta-dot { color: var(--border); }
+
+    /* category page */
+    .cat-page { max-width: 1160px; margin: 0 auto; padding: 52px 24px 64px; }
+    .cat-page-header { margin-bottom: 40px; }
+    .cat-page-eyebrow {
+      font-family: var(--font-ui); font-size: 11px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .cat-page-title {
+      font-family: var(--font-display); font-size: 2.2rem; font-weight: 700;
+      color: var(--text); margin-bottom: 10px; letter-spacing: -0.015em;
+    }
+    .cat-page-desc { font-size: 1.05rem; color: var(--muted); max-width: 540px; }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--font-ui); font-size: 13px; font-weight: 500;
+      color: var(--muted); padding: 8px 14px;
+      border: 1px solid var(--border); border-radius: 7px;
+      transition: all 0.15s; margin-bottom: 32px;
+    }
+    .back-btn:hover { color: var(--text); border-color: var(--faint); }
+
+    /* post page */
+    .post-page { max-width: 1160px; margin: 0 auto; padding: 40px 24px 80px; }
+    .post-layout {
+      display: grid; grid-template-columns: 1fr 340px;
+      gap: 64px; align-items: start;
+    }
+    @media (max-width: 860px) { .post-layout { grid-template-columns: 1fr; } }
+    .post-article {}
+    .post-article-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-family: var(--font-ui); font-size: 11px; font-weight: 700;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      padding: 4px 9px; border-radius: 4px;
+      margin-bottom: 20px;
+    }
+    .post-article-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.7rem, 4vw, 2.6rem);
+      font-weight: 700; line-height: 1.18;
+      letter-spacing: -0.02em; color: var(--text);
+      margin-bottom: 20px;
+    }
+    .post-article-meta {
+      display: flex; align-items: center; gap: 14px;
+      font-family: var(--font-ui); font-size: 13px; color: var(--muted);
+      margin-bottom: 36px; padding-bottom: 28px;
+      border-bottom: 1px solid var(--border);
+    }
+    .post-article-meta .author-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: #F0E8D5; display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--accent);
+      flex-shrink: 0;
+    }
+    .post-body { font-size: 17px; line-height: 1.8; color: var(--text); }
+    .post-body p { margin-bottom: 1.4em; }
+    .post-body h2 { font-family: var(--font-display); font-size: 1.45rem; font-weight: 700; color: var(--text); margin: 2em 0 0.7em; letter-spacing: -0.01em; }
+    .post-body h3 { font-family: var(--font-display); font-size: 1.18rem; font-weight: 600; color: var(--text); margin: 1.6em 0 0.5em; }
+    .post-body strong { font-weight: 600; color: var(--text); }
+    .post-body em { font-style: italic; }
+    .post-body ul, .post-body ol { margin: 0 0 1.4em 1.4em; }
+    .post-body li { margin-bottom: 0.5em; }
+    .post-body blockquote {
+      border-left: 3px solid var(--accent); padding-left: 20px;
+      margin: 1.8em 0; font-style: italic; color: var(--muted);
+    }
+    .post-body hr { border: none; border-top: 1px solid var(--border); margin: 2em 0; }
+
+    .post-sidebar { position: sticky; top: 80px; }
+    .sidebar-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 24px;
+      margin-bottom: 20px;
+    }
+    .sidebar-card-title {
+      font-family: var(--font-ui); font-size: 11px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint);
+      margin-bottom: 16px;
+    }
+    .related-post-item {
+      padding: 12px 0; border-bottom: 1px solid var(--border);
+      cursor: pointer; transition: opacity 0.15s;
+    }
+    .related-post-item:last-child { border-bottom: none; }
+    .related-post-item:hover { opacity: 0.7; }
+    .related-post-title { font-family: var(--font-body); font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.35; margin-bottom: 4px; }
+    .related-post-meta { font-family: var(--font-ui); font-size: 12px; color: var(--faint); }
+
+    /* category nav tabs */
+    .cat-tabs {
+      max-width: 1160px; margin: 0 auto; padding: 20px 24px 0;
+      display: flex; gap: 6px; flex-wrap: wrap;
+    }
+    .cat-tab {
+      display: flex; align-items: center; gap: 7px;
+      font-family: var(--font-ui); font-size: 13px; font-weight: 500;
+      padding: 8px 14px; border-radius: 8px;
+      border: 1px solid var(--border);
+      color: var(--muted); background: var(--bg-card);
+      transition: all 0.15s; cursor: pointer;
+    }
+    .cat-tab:hover { border-color: var(--faint); color: var(--text); }
+    .cat-tab.active { border-color: transparent; color: var(--bg-card); }
+    .cat-tab-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .cat-tab.active-graphic-design  { background: #7B50C8; border-color: #7B50C8; }
+    .cat-tab.active-content-writing { background: #22844F; border-color: #22844F; }
+    .cat-tab.active-video-editing   { background: #CC2A2A; border-color: #CC2A2A; }
+    .cat-tab.active-social-media    { background: #1868C0; border-color: #1868C0; }
+
+    /* footer */
+    .footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      background: var(--bg-card);
+      padding: 40px 24px;
+    }
+    .footer-inner {
+      max-width: 1160px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center; gap: 24px;
+      flex-wrap: wrap;
+    }
+    .footer-brand { font-family: var(--font-display); font-weight: 700; font-size: 1rem; }
+    .footer-brand span { color: var(--accent); }
+    .footer-tagline { font-family: var(--font-ui); font-size: 13px; color: var(--muted); margin-top: 4px; }
+    .footer-links {
+      display: flex; gap: 16px; flex-wrap: wrap;
+    }
+    .footer-link {
+      font-family: var(--font-ui); font-size: 13px; color: var(--muted);
+      transition: color 0.15s;
+    }
+    .footer-link:hover { color: var(--text); }
+    .footer-copy { font-family: var(--font-ui); font-size: 12px; color: var(--faint); }
+
+    /* utility */
+    .text-accent { color: var(--accent); }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.3/babel.min.js"></script>
+
+<script type="text/babel">
+const { useState, useMemo, useEffect, useRef } = React;
+
+/* ─── DATA ─────────────────────────────────────────────────────────── */
+
+const CATS = [
+  { id: "graphic-design",  name: "Graphic Design",   desc: "Earning with visual skills — from client logos to passive template income." },
+  { id: "content-writing", name: "Content Writing",  desc: "The honest path from SEO content mills to high-ticket copywriting clients." },
+  { id: "video-editing",   name: "Video Editing",    desc: "Short-form, long-form, retainers — how video editors are actually building income." },
+  { id: "social-media",    name: "Social Media",     desc: "Strategy, community management, and what social media management really looks like day to day." },
+];
+
+const POSTS = [
+  {
+    id: 1, category: "graphic-design", featured: true,
+    title: "How I Made My First ₹10,000 Selling Templates — Without a Single Client",
+    excerpt: "I kept waiting to feel 'ready'. Three months later I finally just started. The first sale came in on a random Tuesday.",
+    date: "March 28, 2025", readTime: "7 min",
+    content: `The first thing nobody tells you about selling design templates is that you'll spend more time on your product listings than on the actual designs.
+
+I learned this the hard way. I made 14 Instagram templates in one weekend — honestly pretty decent work — uploaded them to Creative Market with blurry screenshots and a description that said something like "modern social media templates, perfect for brands." Three weeks later, zero sales.
+
+The problem wasn't the designs.
+
+I knew this because I'd posted the same templates as free downloads in a couple of Facebook groups and got over 200 downloads in 48 hours. People wanted the templates. My listing just didn't give them a reason to pay for them.
+
+## What actually changed things
+
+I spent a day studying the top-selling template shops on Creative Market. Not to copy them — just to understand what they were doing. The answer was pretty boring: good mockup images and specific product descriptions.
+
+"14 Instagram post templates for food bloggers and recipe creators" beats "social media templates for brands" every single time. Because the food blogger searching Creative Market already knows she's a food blogger. She doesn't need to decide whether the product applies to her — your title has already confirmed it does.
+
+I rewrote all my listings. I took proper screenshots of the templates on a fake Instagram grid I set up in Figma. I repriced them from ₹299 to ₹799 — which sounds counterintuitive, but lower-priced templates often get skipped because buyers assume they're lower quality.
+
+The first sale came in on a Tuesday, 11 days after relisting. ₹799. I remember sitting there refreshing my email.
+
+By the end of that month, I had ₹10,400 in sales from six template packs.
+
+## The tools I actually used
+
+Everything was Canva Pro, not Photoshop or Illustrator. I know that raises eyebrows in design communities, but for selling editable templates, Canva-compatible files are actually a selling point. Most people buying templates plan to customize them in Canva anyway. Meeting them where they are isn't cutting corners — it's just smart product design.
+
+My process: pick a specific audience, look at what content they actually post, design templates that solve their specific problems. Wedding photographers, for example, hate designing quote posts. They want clean text layouts that don't feel like Canva defaults but also don't require design knowledge to customize. That's a real, specific pain point.
+
+## The part nobody talks about
+
+Passive income from templates is real but slow to build. That first ₹10,000 month dropped to ₹4,000 the following month because I wasn't adding new packs. The shops making consistent money are uploading something new every one or two weeks, building a catalog, and benefiting from compounding discovery.
+
+I'm at 22 packs now. Some months it's ₹6,000, some months it's ₹20,000. Inconsistent, but also not zero, and the work is already done.
+
+If I were starting again, I'd do three things differently: niche down harder from the start, invest more time in mockup photography (a phone photo of a tablet showing your template sells better than a flat screenshot), and I'd start on Etsy before Creative Market — the organic traffic is genuinely better for new sellers.
+
+That's it. No secret formula. Just better listings and a narrow enough niche to be found.`
+  },
+  {
+    id: 2, category: "graphic-design", featured: false,
+    title: "Fiverr vs Upwork for Graphic Designers: What 6 Months Taught Me",
+    excerpt: "Both platforms work. They attract completely different kinds of buyers — and knowing that upfront saves a lot of headaches.",
+    date: "March 15, 2025", readTime: "5 min",
+    content: `Six months on both platforms. Here's the honest version.
+
+**Fiverr** attracts buyers who want fixed prices and fast delivery. This works fine once you've set your rates correctly — but a lot of new designers price themselves badly. If you're charging ₹800 for a logo, you're making maybe ₹250 an hour on a good day. And it often isn't a good day.
+
+The upside: once your gig has 30-40 reviews, Fiverr's search algorithm does a lot of work for you. I got to 50 reviews and orders started arriving without me actively pitching.
+
+The downside: revision culture on Fiverr is rough. Some buyers treat unlimited revisions as genuinely unlimited. Set firm boundaries in your gig description before this becomes a problem. "2 rounds of revisions included" is a complete sentence.
+
+**Upwork** is slower to start. I sent 30 proposals in my first month and heard back from two. By month three, I was getting responses from maybe one in five proposals.
+
+The buyers are different though. More serious projects, longer relationships, less nickel-and-diming. I landed one Upwork client who kept me on for four months doing brand assets. That doesn't really happen on Fiverr.
+
+**The actual answer:** For building a portfolio fast, use Fiverr. For building longer client relationships, use Upwork. Most working designers I know use both and stopped thinking of them as competitors a long time ago.
+
+Neither platform is passive. You're always one bad review from a rough week. The people doing well treat their profiles like products they're constantly improving — better portfolio samples, clearer descriptions, more specific positioning. Not "graphic designer" but "logo and brand identity for food and beverage businesses."`
+  },
+  {
+    id: 3, category: "graphic-design", featured: false,
+    title: "The Canva Pro Mistake That Almost Cost Me a Client",
+    excerpt: "Turns out 'share a link' and 'export for print' are not the same thing. A story about learning this at the worst possible moment.",
+    date: "Feb 20, 2025", readTime: "4 min",
+    content: `A short one, but I think about this every time I'm about to deliver a file.
+
+I designed a flyer for a small boutique. Looked great on screen. The client was happy with the mockup. I sent her the Canva share link and told her she could download it from there.
+
+She took it to a print shop. The print shop printed it at 72 DPI because that's what the downloaded PNG defaulted to. The flyer came out blurry. 300 of them.
+
+She was not thrilled.
+
+The fix was simple and I should have known: export as PDF (Print) from Canva — not PNG, not the share link, not the standard PDF. The print PDF option outputs at 300 DPI with proper color settings. That's the file print shops need.
+
+I remade the flyer, covered the reprint cost, and added a "client handoff checklist" to my process that I now use for every project. It has things like: is this going to print? Use PDF (Print). Does the client need editable files? Export as PPTX and walk them through opening it. Are there brand fonts in use? Embed or outline them before export.
+
+Five minutes of checklist saves an hour of fixing.`
+  },
+  {
+    id: 4, category: "graphic-design", featured: false,
+    title: "Print-on-Demand in 2025: Still Worth It or Played Out?",
+    excerpt: "I've been selling on Redbubble for two years. The honest verdict might surprise you.",
+    date: "Feb 3, 2025", readTime: "5 min",
+    content: `The honest answer: it depends on what you're expecting and how you approach it.
+
+Print-on-demand platforms — Redbubble, Merch by Amazon, Society6 — are genuinely passive once your catalog is built. You upload designs, they handle printing, shipping, and customer service. Your margin per sale is small, but you're doing nothing to earn it after the upload.
+
+The problem most people run into is that they think of it as a "upload and wait" strategy. It's not. Platforms like Redbubble have millions of designs. Organic discovery depends almost entirely on keyword optimization and design volume.
+
+After two years, I have around 140 designs on Redbubble. My average monthly earning is about ₹3,000 to ₹5,000. Not life-changing, but it pays for software subscriptions and clears itself without my attention.
+
+What actually works:
+- **Trending searches.** Tools like Merch Informer show you what people are actively searching for. Designs that match real search intent sell. Generic "inspirational quote" designs do not.
+- **Niche specificity.** A "Golden Retriever Dad" mug will outsell "Dog Lover" every time. Go narrow.
+- **Volume matters** but quality matters more at lower volume. Your first 20 designs will teach you more than any course.
+
+Is it worth starting in 2025? If you're going in expecting a side income of ₹2,000 to ₹8,000/month after 6-12 months of consistent uploading — yes. If you're expecting to make ₹50,000/month with 20 designs — no.
+
+Use it as one income stream among several, not as a main strategy.`
+  },
+  {
+    id: 5, category: "content-writing", featured: true,
+    title: "SEO Writing Pays Bills. Copywriting Builds Wealth. Here's the Difference.",
+    excerpt: "After 300+ SEO articles, I switched to sales copywriting. My income doubled in 90 days. This is what actually changed.",
+    date: "March 22, 2025", readTime: "8 min",
+    content: `Let me be direct: SEO writing is a good way to start. It is not a great place to stay.
+
+I spent 14 months writing SEO articles. The money was okay — I averaged around ₹2.50 per word after a few months, which sounds reasonable until you calculate it. A solid 1,000-word article takes me about 3 hours from research to final edit. That's ₹2,500 for 3 hours of focused work. Fine, not remarkable.
+
+SEO writing is also increasingly commoditized. There are thousands of competent writers, and AI has pushed the floor further down — clients who were paying ₹2/word now want me to polish AI drafts for ₹0.50/word. I'm not interested in that trade.
+
+## What copywriting actually is
+
+"Copywriting" sounds like something from a 1960s ad agency, but in practice it just means writing designed to make someone take a specific action: sign up, buy, click, book a call. And businesses pay dramatically more for this than for blog content, for a simple reason.
+
+The ROI is traceable.
+
+If I write an email sequence for an e-commerce brand and it generates ₹8 lakh in sales, paying me ₹40,000 for that work is an obvious business decision. The connection between my work and their revenue is direct and measurable.
+
+An SEO article might eventually rank, drive traffic, and contribute to conversions — but "eventually" is doing a lot of work in that sentence, and clients know it. They price accordingly.
+
+## How I made the switch
+
+I didn't do a ₹15,000 copywriting course. I read about 40 sales pages, email sequences, and landing pages that I knew were working — meaning they were from businesses actually making money, not just websites with pretty typography.
+
+I started noticing patterns. Good copy almost always does three things: it opens with a problem the reader is already thinking about, it takes longer to get to the pitch than you'd expect, and it makes you feel understood before it makes you feel sold to.
+
+Then I offered to rewrite a client's product page for free. I picked a client I already worked with on SEO content, wrote a new version of their highest-traffic product page, and sent it with a short note explaining what I'd changed and why.
+
+They tested it against the original. Conversions went up 23%. They paid me ₹18,000 for a full rewrite of their other product pages — more than I'd earned from four months of their SEO work combined.
+
+## Where to start if you want to make this shift
+
+Study email sequences first. Not landing pages, not full sales letters. Emails.
+
+Why emails: they're shorter (easier to practice), faster to test, and the demand from e-commerce brands is genuinely huge. Most online shops have abandoned email marketing to a "send a 20% coupon every week" strategy, and they know it isn't working. A freelancer who can write a proper welcome sequence, a cart abandonment flow, a post-purchase sequence — that's a real, specific, well-paid skill.
+
+Learn the mechanics: subject lines, preview text, body copy structure, clear calls to action. Then offer to write a 3-email welcome sequence for a small brand as a test project. Get the data. Use it as your portfolio.
+
+SEO writing got me started. I don't regret a day of it. But copywriting is where the leverage is, and I wish someone had told me that earlier.`
+  },
+  {
+    id: 6, category: "content-writing", featured: false,
+    title: "Why I Left Fiverr's Content Mills — And What I Replaced Them With",
+    excerpt: "Earning ₹800 for a 1,200-word article is a trap. It took me a year to see it clearly.",
+    date: "March 8, 2025", readTime: "6 min",
+    content: `Content mills sound good when you're starting out. Consistent work, no pitching, orders just appear. The problem reveals itself slowly.
+
+At ₹800 per 1,200-word article — which was roughly my Fiverr rate for the first eight months — I was making around ₹270 per hour after factoring in research time. That's below minimum wage in most contexts, and it's the good version of content mill rates.
+
+The other problem is what it does to your writing. When you're writing two or three articles per day, you stop thinking carefully about sentences. You develop patterns that help you move fast — transitional phrases, paragraph templates, stock openings. It's efficient. It also makes you worse.
+
+**What I replaced it with**
+
+I moved toward direct client relationships. No platforms taking 20% cuts, no race-to-the-bottom pricing, no anonymous buyers who leave a one-star review because they changed their minds about the topic.
+
+The first direct client I found was through a LinkedIn post where I'd shared some notes about content strategy for SaaS companies. Someone from a mid-size SaaS team messaged me asking if I did freelance work. I did. That single relationship paid me more in three months than eight months of Fiverr orders.
+
+Getting direct clients requires actually showing up somewhere. LinkedIn posts, newsletter writing, guest articles on industry blogs — anywhere your target clients already read. It's slower than waiting for Fiverr orders, but the clients are better in almost every way.
+
+Content mills are useful for exactly one thing: building speed and confidence in your first three to six months. After that, the sooner you move past them, the better.`
+  },
+  {
+    id: 7, category: "content-writing", featured: false,
+    title: "Writing for a Niche You Know Nothing About",
+    excerpt: "My most profitable writing niche is industrial HVAC equipment. A year ago I didn't know what HVAC stood for.",
+    date: "Feb 14, 2025", readTime: "5 min",
+    content: `People get stuck on niche selection because they think you need to write about things you already know. You don't. You need to be good at figuring things out quickly, asking the right questions, and writing clearly about complex topics.
+
+I write primarily for an industrial equipment company now. Their products are commercial HVAC systems — the kind that go in hospitals, data centers, large commercial buildings. I had zero background in this. My first week I was Googling terms I'd never heard and feeling like I was reading a foreign language.
+
+Twelve months later, I understand the product line well enough to spot errors in the technical briefs their engineers send me. I've learned what questions to ask, who to ask them to, and where the gaps are in their existing content. The work is genuinely interesting now, partly because I had to learn it.
+
+**The actual research process**
+
+For any unfamiliar topic, I do three things before writing a word:
+1. Read the company's existing content to understand their voice and where they are in their thinking
+2. Find the two or three most respected publications or communities in that industry — trade journals, Reddit communities, LinkedIn groups — and read a week's worth of content
+3. Talk to someone who works in the field. Not always possible, but even a 20-minute conversation teaches you more than three hours of reading
+
+Then I write, and I write with the assumption that I'll have questions mid-draft that I'll need to send back to the client. That's normal and clients respect it — it's how they know you're actually thinking about their work rather than just filling word counts.
+
+The niche you know nothing about today can become the niche you're paid to know in six months. The research process is the skill. The topic is just material.`
+  },
+  {
+    id: 8, category: "content-writing", featured: false,
+    title: "ProBlogger vs Substack: Honest Thoughts After Trying Both",
+    excerpt: "One gets you clients. The other builds an audience. The question is which one you actually need right now.",
+    date: "Jan 30, 2025", readTime: "4 min",
+    content: `These two platforms get compared a lot, but they're solving different problems.
+
+**ProBlogger's job board** is a place to find paid writing gigs. Clients post jobs, you apply, you get paid. It's a transaction marketplace. The postings range from decent to low, so you have to be selective — but the signal-to-noise ratio is better than most generic freelancing platforms because the clients posting there specifically want writers.
+
+Use it when you need client work now. It's not glamorous, but it's practical.
+
+**Substack** is about building something that's yours. You write a newsletter, build an audience, and eventually (if the audience is big enough and engaged enough) you can monetize through paid subscriptions. The median Substack makes very little money. The top Substacks make a lot.
+
+What Substack does better than almost anything for a writer: it forces you to develop a clear, consistent voice. Writing to the same audience every week teaches you things about your own thinking that client work doesn't.
+
+My honest take: if you need income now, ProBlogger. If you're playing a longer game and want to build something that compounds, Substack — but go in with realistic expectations. It takes a year or two of consistent publishing before momentum shows up. Most people quit at month four.
+
+The writers I know who are doing best have usually got client income from somewhere (ProBlogger, direct clients, Upwork) and are building their Substack in parallel. One pays the bills; the other is the asset they're building.`
+  },
+  {
+    id: 9, category: "video-editing", featured: true,
+    title: "Short-Form Video is a Gold Rush. Here's How I Got In.",
+    excerpt: "I was editing YouTube vlogs for ₹5,000 a video. A client asked me to cut some Reels. My rate tripled in three weeks.",
+    date: "March 20, 2025", readTime: "7 min",
+    content: `This is a specific story about a specific moment — but the pattern shows up everywhere, so stay with it.
+
+I was editing long-form YouTube content. Not badly — my work was good, my clients were happy. But the economics were modest. ₹5,000 to ₹8,000 per video, three or four videos a month, somewhere around ₹20,000 a month total. Enough to take seriously, not enough to rearrange your life around.
+
+The short-form thing happened by accident. A client who makes cooking videos asked if I could cut some Reels from his existing footage. Sure, I said. How different could it be?
+
+Quite different, as it turned out.
+
+## The actual skill difference
+
+Long-form editing is about pacing and storytelling. You're guiding someone through a 10-to-20-minute journey and your cuts need to feel natural, following the energy of the content. A 5-second establishing shot is fine. Breathing room is part of the craft.
+
+Short-form editing is about hooks and retention. You have roughly two seconds to stop a thumb from scrolling. Everything after that first hook is about earning the next three seconds, then the three after that. The decision-making is almost opposite.
+
+I use DaVinci Resolve for both, so the tools were the same. But I had to retrain my instincts for what "good" means. In short-form, "good" is any cut that keeps someone watching. In long-form, "good" is a cut that feels invisible.
+
+## Why the rates are better
+
+A single well-performing Reel can drive more business for a client than five mediocre YouTube videos. Clients figured this out before editors did, which is partly why demand exploded.
+
+I was initially pricing short-form low because I assumed less runtime meant less value. My first Reel packages were ₹8,000 for four Reels — ₹2,000 each — because I thought per-minute was the right pricing model.
+
+Then I noticed two things: four Reels took me less time than one YouTube video, and clients valued them at least as much. I repriced. ₹3,500 per Reel standalone, or ₹12,000 for four. My cooking client took the four-Reel package immediately.
+
+## Getting started if you haven't yet
+
+The easiest entry point is repurposing existing long-form content. Most YouTubers have hours of footage they've already edited into long videos — they just don't have time to also cut short versions for Instagram and TikTok.
+
+This is a real, specific pain point. You're not asking them to create new content, just to extract value from what already exists. The pitch is simple, the raw material is there, and you get to practice without anyone expecting you to already be a short-form expert.
+
+Don't work for free. Even ₹2,000 for a test Reel positions you as a professional rather than a favor. Unpaid work creates a weird dynamic that makes future pricing conversations harder.
+
+The tool question comes up constantly, so: CapCut for quick, simple work. DaVinci Resolve if you want to build proper skills. Premiere Pro if you're already in the Adobe ecosystem. The software matters less than your understanding of what makes someone stop scrolling — and you only develop that by making a lot of them and paying close attention to what works.
+
+Short-form editing is now about 65% of my video work. The rate is higher on average. A year ago the ratio was flipped.`
+  },
+  {
+    id: 10, category: "video-editing", featured: false,
+    title: "Getting Your First YouTube Client Without a Portfolio",
+    excerpt: "The chicken-and-egg problem. Here's how I broke out of it without doing hours of free work.",
+    date: "March 5, 2025", readTime: "5 min",
+    content: `The classic problem: you need a portfolio to get clients, but you need clients to build a portfolio.
+
+Here's how I broke the loop without giving away dozens of hours of free work.
+
+First, I made a spec edit. I took a well-known creator's video — someone with a recognizable style — and re-edited a 10-minute section using different pacing, color grading, and music. The goal wasn't to improve their video (they didn't need my help). The goal was to show a potential client that I could execute a style they recognized.
+
+I used this as my "portfolio piece" when reaching out to smaller creators in the same niche. Not "I edited this creator's video" — that would be misleading — but "here's an example of the editing style I do, inspired by creators in your genre."
+
+Second, I targeted micro-creators in the 5,000-to-20,000 subscriber range. These are creators who are serious enough to care about quality and have enough content to need help, but not so large that they get inundated with pitches from experienced editors. They're often managing everything themselves and genuinely stretched.
+
+My pitch was short. What I do, what niche I specialize in, the spec edit, and a specific observation about one of their videos: "I noticed your recent cooking video drops off around the 8-minute mark — I think a tighter edit of that section would help retention. Happy to demo this on your next upload."
+
+Specific > generic, every time.
+
+The third thing: YouTube's own analytics. A creator who sees their retention graph drop sharply at a specific moment already knows they have an editing problem. You're not convincing them they need help — you're showing up with the solution.`
+  },
+  {
+    id: 11, category: "video-editing", featured: false,
+    title: "DaVinci Resolve vs Premiere Pro: Two Years In",
+    excerpt: "I've used both professionally. Here's what I actually think, without the brand loyalty.",
+    date: "Feb 10, 2025", readTime: "6 min",
+    content: `I've used Premiere Pro for client work for about a year and a half, and DaVinci Resolve for about a year, often on the same types of projects. Here's the honest breakdown.
+
+**Premiere Pro** is better integrated with the Adobe ecosystem. If your clients send you After Effects comps, Illustrator assets, or you're working with someone who uses Audition for audio, Premiere makes that workflow smoother. Dynamic Link between Adobe apps saves real time when projects get complex.
+
+It's also what most production companies use, which matters if you ever want to work in-house or on larger commercial projects. "Premiere Pro" on a resume lands differently than "other NLE."
+
+The downsides: cost (it's subscription-only at around ₹1,800/month), and performance on older hardware is noticeably worse than Resolve.
+
+**DaVinci Resolve** has the best color grading tools available at any price point. The Fusion tab for motion graphics is genuinely powerful. And the free version is not crippled — it's a complete professional NLE that most freelancers will never outgrow.
+
+Resolve's performance on lower-end machines is better. The UI took me about three weeks to stop fighting, and then I genuinely prefer it for most work.
+
+**The actual choice:**
+
+If you're starting out and budget is a consideration, start with Resolve (free). Get good at the fundamentals before you start paying for software.
+
+If you want to work with production companies or larger agencies, learn Premiere.
+
+If color work is central to what you do — music videos, brand films, anything with serious grade needs — Resolve is genuinely better and worth learning regardless of what else you use.
+
+Most professional editors I know use both. The "which is better" conversation is mostly had by people who've committed to one and want validation. They're both good. Learn the one that serves your clients.`
+  },
+  {
+    id: 12, category: "video-editing", featured: false,
+    title: "How to Package Your Editing Services for Monthly Retainers",
+    excerpt: "Per-video pricing is unpredictable. Retainers changed how I plan my income.",
+    date: "Jan 25, 2025", readTime: "5 min",
+    content: `Per-video pricing is the default when you start out, and it works fine until you have a month where two clients go quiet and your income drops to nothing.
+
+Retainers — where a client pays a fixed monthly fee for a defined scope of work — solve the predictability problem. They also change the client relationship in ways that matter.
+
+**What a retainer actually looks like**
+
+My current main retainer is ₹22,000/month for a fitness creator. That covers: one long-form YouTube video per week (editing, color, thumbnail), six short-form clips per month pulled from the long-form content, and a monthly planning call.
+
+I could probably make more per video if I charged individually — but this guarantees me ₹22,000 every month with a client I know and work efficiently with. The planning call each month means fewer revision rounds because we align before I start cutting.
+
+**How to pitch the switch**
+
+Don't pitch a retainer to a new client. Pitch it to someone you've been working with for one or two months who keeps coming back with more work.
+
+The framing: "I've noticed we work really well together and the volume of work is consistent. Would it make sense to move to a monthly package? It would simplify invoicing for both of us and I can lock in better availability for your projects."
+
+That's the honest pitch. You're not doing them a favor and you're not asking for a favor. You're proposing a structure that benefits both of you.
+
+**What to include**
+
+Be specific about deliverables. Not "unlimited edits" (this will break you), but "up to X videos per month, Y revision rounds per video." Everything outside the scope is quoted separately.
+
+One month's notice to cancel on either side is standard. Put it in writing — even a simple email thread establishing the scope and rate counts as a record.`
+  },
+  {
+    id: 13, category: "social-media", featured: true,
+    title: "The ₹40,000/Month SMM Side Hustle Nobody Takes Seriously",
+    excerpt: "It's spreadsheets and scheduling tools and a lot of client education. Not glamorous. But it works.",
+    date: "March 18, 2025", readTime: "8 min",
+    content: `Social media management has a reputation problem. People hear "I manage Instagram accounts for money" and picture someone posting selfies from their phone. The reality is significantly more boring, and more profitable.
+
+Let me walk through what this actually looks like day to day.
+
+## The clients
+
+I currently manage social media for three businesses: a local bakery, a mid-size fitness equipment brand, and a dental clinic. Not exactly the glamorous roster you see in "SMM agency" content online.
+
+For each of them, here's what I actually do:
+- Three to four posts per week, including content creation (writing and sourcing visuals), caption writing, and scheduling
+- Responding to comments and DMs within business hours — not 24/7, but reliably during workday hours
+- A monthly report with actual numbers: reach, engagement rate, profile visits, follower change, and what I think it means
+- A quarterly call to review strategy and adjust
+
+The bakery is ₹8,000/month. The fitness brand is ₹18,000/month (more content, more platforms, more complexity). The dental clinic is ₹14,000/month. Total: ₹40,000/month for about 16-18 hours of work per week.
+
+I don't manage their ad spend. That's a separate conversation with separate pricing, and most small businesses aren't ready for paid social until their organic presence is in order anyway.
+
+## How I got these clients
+
+Not through cold DMs — through conversations.
+
+The bakery owner was someone I'd met at a local market. We got talking, she mentioned she knew her Instagram was a mess but never had time to fix it. I offered to do one month at ₹4,000 so she could see what the work actually looks like. She's been a client for 15 months.
+
+The dental clinic came through a referral from the bakery owner, who mentioned me to her dentist. Local word of mouth from small business owners is dramatically underrated as a client acquisition channel.
+
+The fitness brand found me on LinkedIn. I'd been posting occasional thoughts about content strategy — not promotional posts, just genuine observations from working in the space. Someone from their marketing team reached out.
+
+None of this was fast. It took about eight months to get to ₹40,000/month.
+
+## The part that's actually difficult
+
+Content creation is not the hard part. The hard part is managing what clients expect social media to do.
+
+Every client initially believes that posting consistently will lead to rapid follower growth and new customers within weeks. The reality is slower and more indirect. Good social media builds trust, and trust eventually converts — but "eventually" is doing a lot of work in that sentence, and clients need to understand this before month two when they ask why their follower count only went up by 47.
+
+I spend roughly 20% of my client time on education: explaining why engagement rate matters more than follower count, why a "bad" performing post isn't a catastrophe, what we're actually building toward. The clients who understand this relationship stick around. The clients who want magic leave within three months, which is ultimately fine — they were never going to be satisfied.
+
+## Getting your first client
+
+If I were starting today, I'd target one type of local business and offer a 30-day paid trial. Not free — ₹3,000 to ₹5,000 for the month. Low enough that it feels like low risk, high enough that you're treated as a professional.
+
+Restaurants are a good starting category: their content needs are visual and obvious (food, atmosphere, specials, behind-the-scenes), and restaurant owners are generally active enough on social media to understand what it's for.
+
+Deliver genuinely. Take good photos. Write actual captions, not just hashtag strings. Show up at the end of the month with a simple, plain-language report. Most business owners have never had their Instagram analytics explained to them by someone who knows what they're looking at. That report alone differentiates you from the teenagers who also call themselves social media managers.
+
+The conversion to a proper retainer is much easier once they've seen what you can do.`
+  },
+  {
+    id: 14, category: "social-media", featured: false,
+    title: "What a Real Content Calendar Looks Like (Not the Pinterest Version)",
+    excerpt: "Not color-coded tabs and 30-day planning grids. The working version that actually helps.",
+    date: "Feb 28, 2025", readTime: "5 min",
+    content: `The content calendars that get shared online are beautiful. They're also not what people who do this for a living actually use.
+
+The color-coded Notion templates with content pillars, theme weeks, and engagement hooks mapped out six weeks ahead look great in screenshots. They're also often made by people who've never had to fill a content calendar for a real client with a real business whose priorities shift constantly.
+
+Here's what my actual working calendar looks like for a client.
+
+A shared Google Sheet. Three columns: date, content idea/draft, status. That's 80% of the functionality I need. I can add a fourth column for platform and a fifth for notes, but most weeks I don't need them.
+
+The planning happens weekly, not monthly. Every Monday I look at what's coming up for the business that week — any events, promotions, milestones, or seasonal moments — and I plan 3-4 posts around those. The remaining posts are drawn from evergreen content: things that are always relevant to their audience regardless of the date.
+
+Planning too far ahead is a trap. When I tried to plan a client's Instagram four weeks out, half the posts were outdated or wrong by the time they went live because the business had changed course on a promotion or the news cycle had shifted. Two weeks ahead is about the right planning horizon for most small businesses.
+
+The actual content calendar tool doesn't matter much. What matters is that it's accessible to both you and the client, updated consistently, and shows what's going live and when. Google Sheets, Notion, Trello, a plain notes file — pick whatever you'll actually maintain.`
+  },
+  {
+    id: 15, category: "social-media", featured: false,
+    title: "How to Cold Pitch Local Businesses for Social Media Work",
+    excerpt: "The pitch that works isn't about features. It's about a problem they already know they have.",
+    date: "Feb 5, 2025", readTime: "4 min",
+    content: `Cold pitching works if you pitch the right thing to the right person in the right way. Most cold pitches fail on all three.
+
+**The wrong pitch:** "Hi, I'm a social media manager with experience in content creation, community management, and analytics. I'd love to help your business grow online."
+
+This is about you. It lists your features. It gives the recipient no reason to think you've looked at their business specifically.
+
+**The right pitch:** Walk in, look around, and lead with something specific you noticed.
+
+"I was in last week — the cheese board you posted on Wednesday got a lot of engagement, but I noticed your last five posts have no calls to action. I think there's a lot more you could be getting from your Instagram with some small adjustments."
+
+That's it. You're showing that you've paid attention, you've identified a real and specific problem, and you're hinting that you can fix it. You haven't made it about you at all.
+
+For local businesses, in-person is better than email. Email is easy to ignore. A person standing in front of you is harder to avoid. Walk into the restaurant or boutique during a quiet time, ask for five minutes with the owner or manager, and be concise.
+
+The businesses most likely to say yes are the ones that clearly have some presence online but aren't keeping up with it — sporadic posting, old profile photos, no responses to comments. They already know there's a problem. You're not convincing them they need social media. You're just being the person who shows up with a solution.
+
+Offer a paid month trial. Don't work for free. You'll respect yourself more, and so will they.`
+  }
+];
+
+/* ─── HELPERS ────────────────────────────────────────────────────────── */
+const getCat = id => CATS.find(c => c.id === id);
+
+function BadgePill({ categoryId, size = "sm" }) {
+  const cat = getCat(categoryId);
+  return (
+    <span className={`post-card-badge badge-${categoryId}`}
+      style={{ fontSize: size === "lg" ? "12px" : "11px", padding: size === "lg" ? "5px 11px" : "4px 9px" }}>
+      {cat?.name}
+    </span>
+  );
+}
+
+/* ─── COMPONENTS ─────────────────────────────────────────────────────── */
+
+function SearchOverlay({ posts, onClose, onOpenPost }) {
+  const [q, setQ] = useState("");
+  const inputRef = useRef(null);
+
+  useEffect(() => { inputRef.current?.focus(); }, []);
+
+  const results = useMemo(() => {
+    if (!q.trim()) return [];
+    const lq = q.toLowerCase();
+    return posts.filter(p =>
+      p.title.toLowerCase().includes(lq) ||
+      p.excerpt.toLowerCase().includes(lq) ||
+      getCat(p.category)?.name.toLowerCase().includes(lq)
+    ).slice(0, 6);
+  }, [q, posts]);
+
+  return (
+    <div className="search-overlay" onClick={onClose}>
+      <div className="search-box" onClick={e => e.stopPropagation()}>
+        <div className="search-input-row">
+          <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" style={{ color: "#C5BFB7", flexShrink: 0 }}>
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input ref={inputRef} value={q} onChange={e => setQ(e.target.value)}
+            placeholder="Search posts, topics, categories..." />
+          <button onClick={onClose} style={{ color: "#C5BFB7", fontSize: 18, lineHeight: 1 }}>✕</button>
+        </div>
+        <div className="search-results">
+          {q && results.length === 0 && (
+            <div className="search-empty">No results for "{q}"</div>
+          )}
+          {results.map(p => (
+            <div key={p.id} className="search-result-item" onClick={() => { onOpenPost(p); onClose(); }}>
+              <div className="search-result-title">{p.title}</div>
+              <div className="search-result-cat">{getCat(p.category)?.name} · {p.readTime}</div>
+            </div>
+          ))}
+          {!q && (
+            <div className="search-empty">Start typing to search all posts…</div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Navbar({ currentCat, onHome, onCat, onSearch }) {
+  return (
+    <nav className="navbar">
+      <div className="navbar-inner">
+        <button className="logo" onClick={onHome} style={{ cursor: "pointer" }}>
+          The Modern <span>Freelancer</span> Hub
+        </button>
+        <div className="nav-links">
+          {CATS.map(c => (
+            <button key={c.id} className={`nav-link${currentCat === c.id ? " active" : ""}`}
+              onClick={() => onCat(c.id)}>
+              {c.name}
+            </button>
+          ))}
+        </div>
+        <div className="nav-right">
+          <button className="search-btn" onClick={onSearch}>
+            <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            Search
+          </button>
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+function PostCard({ post, onOpen }) {
+  return (
+    <div className="post-card" onClick={() => onOpen(post)}>
+      <span className={`post-card-badge badge-${post.category}`}>
+        {getCat(post.category)?.name}
+      </span>
+      <div className="post-card-title">{post.title}</div>
+      <div className="post-card-excerpt">{post.excerpt}</div>
+      <div className="post-card-meta">
+        <span>{post.date}</span>
+        <span className="post-card-meta-dot">·</span>
+        <span>{post.readTime} read</span>
+      </div>
+    </div>
+  );
+}
+
+function renderContent(text) {
+  const lines = text.trim().split("\n");
+  const elements = [];
+  let i = 0, key = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+    if (line.startsWith("## ")) {
+      elements.push(<h2 key={key++}>{line.slice(3)}</h2>);
+    } else if (line.startsWith("### ")) {
+      elements.push(<h3 key={key++}>{line.slice(4)}</h3>);
+    } else if (line === "---") {
+      elements.push(<hr key={key++} />);
+    } else if (line.trim() === "") {
+      // skip
+    } else {
+      // parse inline formatting
+      const parsed = parseInline(line, key++);
+      elements.push(<p key={key++}>{parsed}</p>);
+    }
+    i++;
+  }
+  return elements;
+}
+
+function parseInline(text, key) {
+  const parts = [];
+  let remaining = text;
+  let idx = 0;
+  while (remaining.length > 0) {
+    const boldMatch = remaining.match(/\*\*(.+?)\*\*/);
+    const italicMatch = remaining.match(/_(.+?)_/);
+    const first = boldMatch && (!italicMatch || boldMatch.index <= italicMatch.index) ? boldMatch : italicMatch;
+    if (!first) { parts.push(remaining); break; }
+    if (first.index > 0) parts.push(remaining.slice(0, first.index));
+    if (first === boldMatch) parts.push(<strong key={idx++}>{boldMatch[1]}</strong>);
+    else parts.push(<em key={idx++}>{italicMatch[1]}</em>);
+    remaining = remaining.slice(first.index + first[0].length);
+  }
+  return parts;
+}
+
+function PostPage({ post, allPosts, onBack, onOpenPost }) {
+  useEffect(() => { window.scrollTo({ top: 0, behavior: "smooth" }); }, [post.id]);
+
+  const related = allPosts.filter(p => p.id !== post.id && p.category === post.category).slice(0, 3);
+  const otherFeatured = allPosts.filter(p => p.id !== post.id && p.featured).slice(0, 3);
+
+  return (
+    <div className="post-page">
+      <button className="back-btn" onClick={onBack}>
+        ← Back
+      </button>
+      <div className="post-layout">
+        <article className="post-article">
+          <span className={`post-article-badge badge-${post.category}`}>
+            {getCat(post.category)?.name}
+          </span>
+          <h1 className="post-article-title">{post.title}</h1>
+          <div className="post-article-meta">
+            <div className="author-avatar">Z</div>
+            <div>
+              <div style={{ fontWeight: 600, fontSize: 14, color: "#1A1916" }}>Zara</div>
+              <div style={{ fontSize: 12 }}>{post.date} · {post.readTime} read</div>
+            </div>
+          </div>
+          <div className="post-body">
+            {renderContent(post.content)}
+          </div>
+        </article>
+        <aside className="post-sidebar">
+          {related.length > 0 && (
+            <div className="sidebar-card">
+              <div className="sidebar-card-title">More in {getCat(post.category)?.name}</div>
+              {related.map(p => (
+                <div key={p.id} className="related-post-item" onClick={() => onOpenPost(p)}>
+                  <div className="related-post-title">{p.title}</div>
+                  <div className="related-post-meta">{p.readTime} read</div>
+                </div>
+              ))}
+            </div>
+          )}
+          {otherFeatured.length > 0 && (
+            <div className="sidebar-card">
+              <div className="sidebar-card-title">Featured Posts</div>
+              {otherFeatured.map(p => (
+                <div key={p.id} className="related-post-item" onClick={() => onOpenPost(p)}>
+                  <span className={`post-card-badge badge-${p.category}`} style={{ fontSize: 10, padding: "3px 7px", marginBottom: 4 }}>
+                    {getCat(p.category)?.name}
+                  </span>
+                  <div className="related-post-title">{p.title}</div>
+                  <div className="related-post-meta">{p.readTime} read</div>
+                </div>
+              ))}
+            </div>
+          )}
+          <div className="sidebar-card">
+            <div className="sidebar-card-title">About</div>
+            <p style={{ fontSize: 14, color: "#7A7066", lineHeight: 1.65 }}>
+              The Modern Freelancer Hub is written by Zara — a digital freelancer sharing real, earned knowledge about building income from creative skills online.
+            </p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  );
+}
+
+function CategoryPage({ catId, allPosts, onBack, onOpenPost }) {
+  const cat = getCat(catId);
+  const posts = allPosts.filter(p => p.category === catId);
+  useEffect(() => { window.scrollTo({ top: 0 }); }, [catId]);
+  return (
+    <div className="cat-page">
+      <button className="back-btn" onClick={onBack}>← Back to home</button>
+      <div className="cat-page-header">
+        <div className="cat-page-eyebrow">Category</div>
+        <h1 className="cat-page-title">{cat?.name}</h1>
+        <p className="cat-page-desc">{cat?.desc}</p>
+      </div>
+      <div className="posts-grid">
+        {posts.map(p => <PostCard key={p.id} post={p} onOpen={onOpenPost} />)}
+      </div>
+    </div>
+  );
+}
+
+function HomePage({ posts, onOpenPost, onCat }) {
+  const featuredPosts = posts.filter(p => p.featured);
+  const hero = featuredPosts[0];
+  const sidebarFeatured = featuredPosts.slice(1, 4);
+  const recentAll = posts.filter(p => !p.featured).slice(0, 9);
+
+  return (
+    <>
+      {/* Hero */}
+      <div className="hero">
+        <div className="hero-eyebrow">The Modern Freelancer Hub</div>
+        <div className="hero-grid">
+          <div className="hero-left">
+            <BadgePill categoryId={hero.category} />
+            <h2 className="hero-title" onClick={() => onOpenPost(hero)}>{hero.title}</h2>
+            <p className="hero-excerpt">{hero.excerpt}</p>
+            <div className="hero-meta">
+              <span>By Zara</span>
+              <span className="dot">·</span>
+              <span>{hero.date}</span>
+              <span className="dot">·</span>
+              <span>{hero.readTime} read</span>
+            </div>
+            <button className="hero-read-btn" onClick={() => onOpenPost(hero)}>
+              Read article →
+            </button>
+          </div>
+          <div className="hero-right">
+            <div className="sidebar-heading">Also featured</div>
+            <div className="sidebar-list">
+              {sidebarFeatured.map((p, i) => (
+                <div key={p.id} className="sidebar-item" onClick={() => onOpenPost(p)}>
+                  <div className="sidebar-num">0{i + 1}</div>
+                  <div className="sidebar-item-text">
+                    <div className={`sidebar-item-cat badge-${p.category}`}
+                      style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", padding: "3px 7px", borderRadius: 3, display: "inline-block", marginBottom: 6 }}>
+                      {getCat(p.category)?.name}
+                    </div>
+                    <div className="sidebar-item-title">{p.title}</div>
+                    <div className="sidebar-item-meta">{p.readTime} read</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Category Tabs */}
+      <div className="cat-tabs">
+        {CATS.map(c => (
+          <button key={c.id} className="cat-tab" onClick={() => onCat(c.id)}>
+            <span className={`cat-tab-dot dot-${c.id}`} />
+            {c.name}
+          </button>
+        ))}
+      </div>
+
+      {/* Divider */}
+      <div className="divider">
+        <span className="divider-label">Latest posts</span>
+        <div className="divider-line" />
+      </div>
+
+      {/* Posts Grid */}
+      <div className="posts-section">
+        <div className="posts-grid">
+          {recentAll.map(p => <PostCard key={p.id} post={p} onOpen={onOpenPost} />)}
+        </div>
+      </div>
+    </>
+  );
+}
+
+function Footer({ onNav }) {
+  return (
+    <footer className="footer">
+      <div className="footer-inner">
+        <div>
+          <div className="footer-brand">The Modern <span>Freelancer</span> Hub</div>
+          <div className="footer-tagline">Real guides for digital freelancers. Written by Zara.</div>
+        </div>
+        <div className="footer-links">
+          {CATS.map(c => (
+            <button key={c.id} className="footer-link" onClick={() => onNav("cat", c.id)}>
+              {c.name}
+            </button>
+          ))}
+        </div>
+        <div className="footer-copy">© 2025 The Modern Freelancer Hub</div>
+      </div>
+    </footer>
+  );
+}
+
+/* ─── APP ─────────────────────────────────────────────────────────────── */
+function App() {
+  const [view, setView] = useState({ page: "home", post: null, cat: null });
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  const openPost = post => setView({ page: "post", post, cat: null });
+  const openCat  = catId => setView({ page: "cat", post: null, cat: catId });
+  const goHome   = () => setView({ page: "home", post: null, cat: null });
+
+  const navHandler = (type, id) => {
+    if (type === "home") goHome();
+    else if (type === "cat") openCat(id);
+  };
+
+  return (
+    <div id="app-root" style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+      {searchOpen && (
+        <SearchOverlay
+          posts={POSTS}
+          onClose={() => setSearchOpen(false)}
+          onOpenPost={p => { openPost(p); setSearchOpen(false); }}
+        />
+      )}
+      <Navbar
+        currentCat={view.cat}
+        onHome={goHome}
+        onCat={openCat}
+        onSearch={() => setSearchOpen(true)}
+      />
+      <main style={{ flex: 1 }}>
+        {view.page === "home" && (
+          <HomePage posts={POSTS} onOpenPost={openPost} onCat={openCat} />
+        )}
+        {view.page === "post" && view.post && (
+          <PostPage
+            post={view.post}
+            allPosts={POSTS}
+            onBack={() => window.history.length > 1 ? setView(prev => ({ ...prev, page: "home" })) : goHome()}
+            onOpenPost={openPost}
+          />
+        )}
+        {view.page === "cat" && view.cat && (
+          <CategoryPage
+            catId={view.cat}
+            allPosts={POSTS}
+            onBack={goHome}
+            onOpenPost={openPost}
+          />
+        )}
+      </main>
+      <Footer onNav={navHandler} />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
